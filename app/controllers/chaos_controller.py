@@ -42,3 +42,8 @@ def metrics():
         generate_latest(),
         mimetype="text/plain"
     )
+
+@chaos_bp.route("/cpu-burn", methods=["POST"])
+def cpu_burn():
+
+    return ChaosService.cpu_burn()

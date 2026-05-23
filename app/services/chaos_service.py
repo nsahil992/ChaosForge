@@ -1,6 +1,7 @@
 from models.state import ChaosState
 import time
 from metrics.prometheus_metrics import REQUEST_COUNT, ERROR_MODE
+from utils.cpu_stress import burn_cpu
 
 class ChaosService:
 
@@ -54,3 +55,13 @@ class ChaosService:
             "status": "UP",
             "message": "Application healthy"
         }, 200
+
+    @staticmethod
+    def cpu_burn():
+
+        burn_cpu()
+
+        return {
+            "status": "success",
+            "message": "CPU burn simulation completed"
+        }
