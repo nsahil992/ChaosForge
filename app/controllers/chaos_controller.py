@@ -18,3 +18,11 @@ def toggle_error():
     response = ChaosService.toggle_error_mode()
 
     return jsonify(response), 200
+
+
+@chaos_bp.route("/slow-down", methods=["GET"])
+def slow_down():
+
+    response, status_code = ChaosService.simulate_slow_response()
+
+    return jsonify(response), status_code

@@ -1,4 +1,5 @@
 from models.state import ChaosState
+import time
 
 class ChaosService:
 
@@ -24,3 +25,13 @@ class ChaosService:
         return {
             "error_mode": ChaosState.error_mode
         }
+
+    @staticmethod
+    def simulate_slow_response():
+
+        time.sleep(5)
+
+        return {
+            "status": "slow",
+            "message": "Response delayed intentionally by 5 seconds"
+        }, 200
