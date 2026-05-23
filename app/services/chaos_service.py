@@ -1,10 +1,13 @@
 from models.state import ChaosState
 import time
+from metrics.prometheus_metrics import REQUEST_COUNT, ERROR_MODE
 
 class ChaosService:
 
     @staticmethod
     def get_success_response():
+
+        REQUEST_COUNT.inc()
 
         if ChaosState.error_mode:
             return {
@@ -21,6 +24,8 @@ class ChaosService:
     def toggle_error_mode():
 
         ChaosState.error_mode = not ChaosState.error_mode
+
+        ERROR_MODE.set(1 if ChaosState.error_mode else 0)
 
         return {
             "error_mode": ChaosState.error_mode
