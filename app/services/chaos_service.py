@@ -2,9 +2,11 @@ from models.state import ChaosState
 import time
 from metrics.prometheus_metrics import REQUEST_COUNT, ERROR_MODE
 from utils.cpu_stress import burn_cpu
+from utils.memory_stress import leak_memory
 
 class ChaosService:
 
+    # SUCCESS SERVICE
     @staticmethod
     def get_success_response():
 
@@ -21,6 +23,7 @@ class ChaosService:
             "message": "ChaosForge healthy"
         }, 200
 
+    # TOGGLE ERROR SERVICE
     @staticmethod
     def toggle_error_mode():
 
@@ -32,6 +35,7 @@ class ChaosService:
             "error_mode": ChaosState.error_mode
         }
 
+    # SIMULATION OF SLOW RESPONSE SERVICE
     @staticmethod
     def simulate_slow_response():
 
@@ -42,6 +46,7 @@ class ChaosService:
             "message": "Response delayed intentionally by 5 seconds"
         }, 200
 
+    # HEALTH SERVICE
     @staticmethod
     def get_health_status():
 
@@ -56,6 +61,7 @@ class ChaosService:
             "message": "Application healthy"
         }, 200
 
+    # HIGH CPU USAGE SERVICE
     @staticmethod
     def cpu_burn():
 
@@ -64,4 +70,16 @@ class ChaosService:
         return {
             "status": "success",
             "message": "CPU burn simulation completed"
+        }
+
+    # MEMORY LEAK SERVICE
+    @staticmethod
+    def memory_leak():
+
+        allocations = leak_memory()
+
+        return {
+            "status": "warning",
+            "message": "Memory leak simulated",
+            "allocations": allocations
         }
