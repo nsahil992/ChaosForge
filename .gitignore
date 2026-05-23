@@ -1,0 +1,12 @@
+HELP.md
+.DS_Store
+.env
+postgres-secret.yaml
+venv/
+.idea/
+__pycache__/
+*.pyc
+.env
+.vscode/
+chaos-data/
+actions-runner
