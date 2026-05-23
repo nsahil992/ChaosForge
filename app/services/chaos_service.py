@@ -35,3 +35,17 @@ class ChaosService:
             "status": "slow",
             "message": "Response delayed intentionally by 5 seconds"
         }, 200
+
+    @staticmethod
+    def get_health_status():
+
+        if ChaosState.error_mode:
+            return {
+                "status": "DOWN",
+                "message": "Chaos mode active"
+            }, 503
+
+        return {
+            "status": "UP",
+            "message": "Application healthy"
+        }, 200

@@ -26,3 +26,10 @@ def slow_down():
     response, status_code = ChaosService.simulate_slow_response()
 
     return jsonify(response), status_code
+
+@chaos_bp.route("/health", methods=["GET"])
+def health():
+
+    response, status_code = ChaosService.get_health_status()
+
+    return jsonify(response), status_code
