@@ -1,0 +1,16 @@
+services:
+
+  chaosforge:
+    build: .
+    container_name: chaosforge-app
+    image: nsahil992/chaosforge:1.0.0
+
+    ports:
+      - "5050:5050"
+    restart: unless-stopped
+
+    networks:
+      - chaosforge-net
+
+networks:
+  chaosforge-net:
