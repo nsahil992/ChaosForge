@@ -15,6 +15,9 @@ freeze:
 run:
 	python app/app.py
 
+validate:
+	python -m py_compile app/app.py
+
 # ----- DOCKER TARGETS -----
 docker-test:
 	hadolint Dockerfile
