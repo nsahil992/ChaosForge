@@ -1,0 +1,407 @@
+# ChaosForge
+
+ChaosForge is a chaos engineering and observability simulation platform built using Python and Flask.
+
+The goal of the project is to intentionally simulate production failures such as application crashes, latency spikes, CPU exhaustion, and memory leaks in order to test monitoring, alerting, resilience, and GitOps workflows using production-grade DevOps tooling.
+
+Instead of building a feature-heavy application, ChaosForge focuses on operational engineering concepts used by SREs and DevOps engineers in real-world distributed systems.
+
+---
+
+# Project Goals
+
+ChaosForge is designed to demonstrate:
+
+- Failure simulation
+- Application observability
+- Infrastructure resilience
+- Monitoring and alerting
+- Chaos engineering concepts
+- GitOps deployment workflows
+- Kubernetes self-healing behavior
+- Production-grade DevOps practices
+
+---
+
+# Current Features
+
+## Healthy Endpoint
+
+Simulates a healthy production service.
+
+### Endpoint
+```http
+GET /success
+```
+
+### Response
+```json
+{
+  "status": "success",
+  "message": "ChaosForge healthy"
+}
+```
+
+---
+
+## Failure Toggle Endpoint
+
+Enables or disables application-wide failure mode.
+
+When enabled:
+- `/success` returns HTTP 500
+- error metrics increase
+- logs emit critical failures
+
+### Endpoint
+```http
+POST /toggle-error
+```
+
+### Response
+```json
+{
+  "status": "success",
+  "error_mode": true,
+  "message": "Chaos mode toggled"
+}
+```
+
+---
+
+## Slow Response Simulation
+
+Introduces artificial latency using `time.sleep()`.
+
+Used for:
+- latency monitoring
+- p95/p99 visualization
+- SLO/SLA simulations
+
+### Endpoint
+```http
+GET /slow-down
+```
+
+### Response
+```json
+{
+  "status": "slow",
+  "message": "Response delayed intentionally by 5 seconds"
+}
+```
+
+---
+
+## Health Check Endpoint
+
+Used for:
+- liveness probes
+- readiness probes
+- service monitoring
+
+### Endpoint
+```http
+GET /health
+```
+
+### Healthy Response
+```json
+{
+  "status": "UP",
+  "message": "Application healthy"
+}
+```
+
+### Failure Response
+```json
+{
+  "status": "DOWN",
+  "message": "Chaos mode active"
+}
+```
+
+---
+
+## Metrics Endpoint
+
+Exposes Prometheus-compatible metrics for observability.
+
+### Endpoint
+```http
+GET /metrics
+```
+
+### Exposed Metrics
+- request count
+- error count
+- request latency
+- CPU chaos events
+- memory chaos events
+
+---
+
+## CPU Burn Simulation
+
+Artificially generates high CPU utilization.
+
+Used for:
+- Kubernetes autoscaling demonstrations
+- resource monitoring
+- CPU alert simulations
+
+### Endpoint
+```http
+POST /cpu-burn
+```
+
+### Response
+```json
+{
+  "status": "success",
+  "message": "CPU burn simulation completed"
+}
+```
+
+---
+
+## Memory Leak Simulation
+
+Artificially increases memory consumption by retaining allocated memory references.
+
+Used for:
+- OOMKilled demonstrations
+- memory pressure testing
+- memory alert simulations
+
+### Endpoint
+```http
+POST /memory-leak
+```
+
+### Response
+```json
+{
+  "status": "warning",
+  "message": "Memory leak simulated",
+  "allocations": 1
+}
+```
+
+---
+
+# Project Architecture
+
+```text
+chaosforge/
+│
+├── app/
+│   ├── controllers/
+│   │   └── chaos_controller.py
+│   │
+│   ├── services/
+│   │   └── chaos_service.py
+│   │
+│   ├── metrics/
+│   │   └── prometheus_metrics.py
+│   │
+│   ├── models/
+│   │   └── state.py
+│   │
+│   ├── utils/
+│   │   ├── cpu_stress.py
+│   │   └── memory_stress.py
+│   │   └── metrics.py
+│   └── app.py
+│
+├── requirements.txt
+├── Makefile
+├── .gitignore
+└── README.md
+```
+
+---
+
+# Technology Stack
+
+## Backend
+- Python
+- Flask
+
+## Observability
+- Prometheus Client Library
+
+## Chaos Engineering
+- CPU stress simulation
+- Memory leak simulation
+- Failure injection
+- Latency simulation
+
+---
+
+# Metrics Instrumentation
+
+ChaosForge currently exposes:
+
+| Metric | Purpose |
+|---|---|
+| `chaosforge_requests_total` | Total API requests |
+| `chaosforge_errors_total` | Total simulated failures |
+| `chaosforge_request_latency_seconds` | Request latency histogram |
+| `chaosforge_cpu_burn_total` | CPU chaos simulations |
+| `chaosforge_memory_leak_total` | Memory leak simulations |
+
+---
+
+# Running Locally
+
+## Clone Repository
+
+```bash
+git clone https://github.com/nsahil992/ChaosForge
+cd chaosforge
+```
+
+---
+
+## Create Virtual Environment
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+---
+
+## Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+## Run Application
+
+```bash
+make run
+```
+
+Application runs on:
+
+```text
+http://localhost:5050
+```
+
+---
+
+# Example API Calls
+
+## Healthy Request
+
+```bash
+curl http://localhost:5050/success
+```
+
+---
+
+## Enable Failure Mode
+
+```bash
+curl -X POST http://localhost:5050/toggle-error
+```
+
+---
+
+## Simulate Slow Response
+
+```bash
+curl http://localhost:5050/slow-down
+```
+
+---
+
+## Simulate CPU Spike
+
+```bash
+curl -X POST http://localhost:5050/cpu-burn
+```
+
+---
+
+## Simulate Memory Leak
+
+```bash
+curl -X POST http://localhost:5050/memory-leak
+```
+
+---
+
+## View Metrics
+
+```bash
+curl http://localhost:5050/metrics
+```
+
+---
+
+# Makefile Targets
+
+| Target | Description |
+|---|---|
+| `make run` | Start Flask application |
+| `make install` | Install dependencies |
+| `make freeze` | Update requirements.txt |
+
+---
+
+# DevOps Stack
+
+The next stages of the project will include:
+
+- Docker
+- Docker Compose
+- GitHub Actions CI
+- Kubernetes
+- Helm
+- ArgoCD
+- Prometheus
+- Grafana
+- Loki
+- Alertmanager
+- K6 Load Testing
+- Horizontal Pod Autoscaler
+- GitOps Deployment Workflow
+
+---
+
+# Production Demonstrations
+
+ChaosForge will eventually demonstrate:
+
+- failure detection
+- observability pipelines
+- automated alerting
+- Kubernetes self-healing
+- autoscaling under load
+- GitOps reconciliation
+- deployment rollback workflows
+
+---
+
+# Development Workflow
+
+This project follows a structured Git branching strategy.
+
+| Branch | Purpose |
+|---|---|
+| `development` | Application development |
+| `feature/docker` | Dockerization |
+| `feature/docker-compose` | Docker Compose setup |
+| `feature/ci` | GitHub Actions CI workflow |
+| `feature/kubernetes` | Kubernetes manifests |
+| `feature/helm` | Helm charts |
+| `feature/argocd` | GitOps workflows |
+| `feature/monitoring` | Prometheus/Grafana/Loki |
+
+---
