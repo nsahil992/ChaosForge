@@ -404,4 +404,96 @@ This project follows a structured Git branching strategy.
 | `feature/argocd` | GitOps workflows |
 | `feature/monitoring` | Prometheus/Grafana/Loki |
 
+
+
+---
+
+# Docker
+
+ChaosForge is fully containerized using Docker.
+
+## Build Docker Image
+
+```bash
+
+docker build -t nsahil992/chaosforge:1.0.0 .
+
+```
+
+## Run Container
+
+```bash
+
+docker run -p 5050:5050 nsahil992/chaosforge:1.0.0
+
+```
+
+---
+
+# Docker Optimization
+
+The project uses:
+
+- Multi-stage Docker builds
+
+- Slim Python base image
+
+- Optimized dependency layers
+
+- `.dockerignore`
+
+## Image Size Optimization
+
+| Built Type | Image Size |
+|---|---|
+| Initial Single Stage Build | 1.65 GB |
+| Optimized Multi-Stage Build | 211 MB |
+
+
+## Reduction Achieved
+
+- Reduced image size by approximately **87.2%**
+
+- Reduced image size by approximately **1.44 GB**
+
+This optimization improves:
+
+- Faster deployments
+
+- Reduced registry storage
+
+- Faster Kubernetes pull times
+
+- Lower infrastructure overhead
+
+---
+
+# Docker Compose
+
+ChaosForge uses Docker Compose for local infrastructure orchestration.
+
+## Start Services
+
+```bash
+
+docker compose up
+
+```
+
+## Run in Detached Mode
+
+```bash
+
+docker compose up -d
+
+```
+
+## Stop Services
+
+```bash
+
+docker compose down
+
+```
+
 ---
