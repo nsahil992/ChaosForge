@@ -23,7 +23,7 @@ docker-build:
 	docker build -t $(IMAGE) .
 
 docker-run:
-	docker run --env-file .env -p 8081:8081 $(IMAGE)
+	docker run -p 5050:5050 $(IMAGE)
 
 docker-tag:
 	docker tag $(IMAGE) $(IMAGE)
