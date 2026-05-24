@@ -1,41 +1,54 @@
-from models.state import ChaosState
+from flask import jsonify
 import time
-from metrics.prometheus_metrics import REQUEST_COUNT, ERROR_MODE
+from models.state import ChaosState
+
+from metrics.prometheus_metrics import (
+    REQUEST_COUNT,
+    ERROR_MODE
+)
+
 from utils.cpu_stress import burn_cpu
 from utils.memory_stress import leak_memory
 
 class ChaosService:
 
-    # SUCCESS SERVICE
+    # Healthy response service
     @staticmethod
     def get_success_response():
 
         REQUEST_COUNT.inc()
 
         if ChaosState.error_mode:
-            return {
+
+            print("[CRITICAL] Database Connection Timeout!")
+
+            return jsonify({
                 "status": "error",
                 "message": "Simulated system failure"
-            }, 500
+            }), 500
 
-        return {
+        return jsonify({
             "status": "success",
             "message": "ChaosForge healthy"
-        }, 200
+        }), 200
 
-    # TOGGLE ERROR SERVICE
+    # Failure toggle service
     @staticmethod
     def toggle_error_mode():
 
         ChaosState.error_mode = not ChaosState.error_mode
 
-        ERROR_MODE.set(1 if ChaosState.error_mode else 0)
+        ERROR_MODE.set(
+            1 if ChaosState.error_mode else 0
+        )
 
         return {
-            "error_mode": ChaosState.error_mode
+            "status": "success",
+            "error_mode": ChaosState.error_mode,
+            "message": "Chaos mode toggled"
         }
 
-    # SIMULATION OF SLOW RESPONSE SERVICE
+    # Slow response simulation service
     @staticmethod
     def simulate_slow_response():
 
@@ -46,11 +59,12 @@ class ChaosService:
             "message": "Response delayed intentionally by 5 seconds"
         }, 200
 
-    # HEALTH SERVICE
+    # Application health service
     @staticmethod
     def get_health_status():
 
         if ChaosState.error_mode:
+
             return {
                 "status": "DOWN",
                 "message": "Chaos mode active"
@@ -61,7 +75,7 @@ class ChaosService:
             "message": "Application healthy"
         }, 200
 
-    # HIGH CPU USAGE SERVICE
+    # CPU stress simulation service
     @staticmethod
     def cpu_burn():
 
@@ -72,7 +86,7 @@ class ChaosService:
             "message": "CPU burn simulation completed"
         }
 
-    # MEMORY LEAK SERVICE
+    # Memory leak simulation service
     @staticmethod
     def memory_leak():
 
