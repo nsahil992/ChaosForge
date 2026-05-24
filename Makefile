@@ -1,5 +1,11 @@
 .PHONY: run install freeze
 
+APP_NAME = chaosforge
+VERSION ?= 1.0.0
+
+DOCKER_USERNAME ?= nsahil992
+IMAGE = $(DOCKER_USERNAME)/$(APP_NAME):$(VERSION)
+
 install:
 	pip install -r requirements.txt
 
@@ -8,3 +14,28 @@ freeze:
 
 run:
 	python app/app.py
+
+# ----- DOCKER TARGETS -----
+docker-test:
+	hadolint Dockerfile
+
+docker-build:
+	docker build -t $(IMAGE) .
+
+docker-run:
+	docker run --env-file .env -p 8081:8081 $(IMAGE)
+
+docker-tag:
+	docker tag $(IMAGE) $(IMAGE)
+
+docker-push:
+	docker push $(IMAGE)
+
+# ----- DOCKER COMPOSE TARGETS -----
+
+compose-up:
+	docker compose up
+
+compose-down:
+	docker compose down
+
