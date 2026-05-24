@@ -1,0 +1,55 @@
+name: ChaosForge CI Pipeline
+
+on:
+  workflow_dispatch:
+
+  push:
+    branches:
+      - master
+      - feature/**
+
+    paths:
+      - "app/**"
+      - "Dockerfile"
+      - "requirements.txt"
+      - ".github/workflows/**"
+      - "k8s/**"
+      - "helm/**"
+
+jobs:
+  ci:
+    name: Build, Test, and Push Docker Image
+    runs-on: self-hosted
+
+    env:
+      VERSION: ${{ secrets.SEMVER_VERSION }}
+      HOME: /Users/Sahil
+
+    steps:
+
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Verify Python Installation
+        run: |
+          python3 --version
+
+      - name: Install dependencies
+        run: make install
+
+      - name: Validate application imports
+        run: make validate
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ vars.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_TOKEN }}
+
+      - name: Docker Test
+        run: make docker-test
+
+      - name: Docker Build and Push
+        run: |
+          make docker-build VERSION=${{ env.VERSION }}
+          make docker-push VERSION=${{ env.VERSION }}
