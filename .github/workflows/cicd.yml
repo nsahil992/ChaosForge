@@ -13,7 +13,6 @@ on:
       - "Dockerfile"
       - "requirements.txt"
       - ".github/workflows/**"
-      - "k8s/**"
       - "helm/**"
 
 jobs:
