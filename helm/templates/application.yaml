@@ -5,7 +5,7 @@ kind: Deployment
 metadata:
   name: chaosforge-deployment
 spec:
-  replicas: 2
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       app: chaosforge
@@ -16,23 +16,23 @@ spec:
         app: chaosforge
     spec:
       nodeSelector:
-        type: application
+        type: {{ .Values.nodeSelector.type }}
 
       containers:
         - name: chaosforge
-          image: nsahil992/chaosforge:1.0.0
-          imagePullPolicy: Always
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           ports:
             - containerPort: 5050
 
           resources:
             requests:
-              memory: "128Mi"
-              cpu: "100m"
+              memory: "{{ .Values.resources.requests.memory }}"
+              cpu: "{{ .Values.resources.requests.cpu }}"
 
             limits:
-              memory: "512Mi"
-              cpu: "500m"
+              memory: "{{ .Values.resources.limits.memory }}"
+              cpu: "{{ .Values.resources.limits.cpu }}"
 
           livenessProbe:
             httpGet:
@@ -61,8 +61,8 @@ spec:
 
   ports:
     - protocol: TCP
-      port: 80
-      targetPort: 5050
-  type: NodePort
+      port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetPort }}
+  type: "{{ .Values.service.type }}"
 
 
