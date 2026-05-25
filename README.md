@@ -594,7 +594,7 @@ kubectl label node minikube-m02 type=dependent-services
 
 ```bash
 
-kubectl apply -f k8s/
+kubectl apply -f helm/
 
 ```
 
@@ -619,3 +619,244 @@ kubectl port-forward svc/chaosforge-service 5050:80 -n chaosforge
 ```
 
 ---
+
+# Helm Deployment
+
+ChaosForge uses Helm for Kubernetes package management and reusable infrastructure templating.
+
+Helm enables:
+- reusable Kubernetes deployments
+- centralized configuration management
+- environment-based deployments
+- deployment lifecycle management
+- simplified upgrades and rollbacks
+
+---
+
+# Helm Architecture
+
+ChaosForge infrastructure evolved from:
+
+```text
+Raw Kubernetes YAML
+        ↓
+Reusable Helm Templates
+        ↓
+GitOps-ready Infrastructure
+```
+
+---
+
+# Helm Chart Structure
+
+```text
+helm/
+├── Chart.yaml
+├── values.yaml
+├── .helmignore
+└── templates/
+    └── application.yaml
+```
+
+---
+
+## Kubernetes Templating
+
+Helm templates dynamically generate Kubernetes manifests.
+
+Examples:
+
+```yaml
+replicas: {{ .Values.replicaCount }}
+```
+
+```yaml
+image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+```
+
+---
+
+# Helm Lifecycle Commands
+
+## Install Helm Chart
+
+```bash
+helm install chaosforge . -n chaosforge
+```
+
+---
+
+## Upgrade Helm Release
+
+```bash
+helm upgrade chaosforge . -n chaosforge
+```
+
+---
+
+## Uninstall Helm Release
+
+```bash
+helm uninstall chaosforge -n chaosforge
+```
+
+---
+
+# Validate Rendered Templates
+
+Helm templates can be rendered locally before deployment.
+
+```bash
+helm template chaosforge .
+```
+
+---
+
+# ArgoCD GitOps Deployment
+
+ChaosForge uses ArgoCD to implement a GitOps-based continuous deployment workflow.
+
+ArgoCD continuously monitors the Git repository and automatically reconciles Kubernetes cluster state with the desired declarative infrastructure state defined in Git.
+
+This eliminates manual deployment operations and enables automated, self-healing infrastructure management.
+
+---
+
+# GitOps Architecture
+
+```text
+Developer Push
+        │
+        ▼
+GitHub Repository
+        │
+        ▼
+ArgoCD Watches Repository
+        │
+        ▼
+Helm Chart Changes Detected
+        │
+        ▼
+Kubernetes Cluster Reconciled
+```
+
+---
+
+## Self-Healing Infrastructure
+
+ArgoCD continuously compares:
+- desired Git state
+- actual cluster state
+
+If manual drift occurs, ArgoCD automatically restores the expected configuration.
+
+---
+
+## Helm Integration
+
+ArgoCD deploys ChaosForge directly from Helm charts.
+
+Deployment flow:
+
+```text
+GitHub Actions
+        ↓
+Docker Image Build & Push
+        ↓
+Helm values.yaml Updated
+        ↓
+Git Push
+        ↓
+ArgoCD Detects Drift
+        ↓
+Automatic Kubernetes Reconciliation
+```
+
+---
+
+The Application resource defines:
+- Git repository source
+- target branch
+- Helm chart path
+- destination namespace
+- synchronization policies
+
+---
+
+# ArgoCD Deployment Commands
+
+## Install ArgoCD
+
+```bash
+kubectl apply --server-side -n argocd \
+-f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+```
+
+---
+
+## Access ArgoCD UI
+
+```bash
+kubectl port-forward svc/argocd-server -n argocd 9393:443
+```
+
+Access UI:
+
+```text
+https://localhost:9393
+```
+
+---
+
+## Retrieve Initial Admin Password
+
+```bash
+kubectl -n argocd get secret argocd-initial-admin-secret \
+-o jsonpath="{.data.password}" | base64 --decode
+```
+
+---
+
+# ArgoCD Application Deployment
+
+## Apply GitOps Application
+
+```bash
+kubectl apply -f argocd/chaosforge-app.yaml
+```
+
+---
+
+## Verify Application Status
+
+```bash
+kubectl get applications -n argocd
+```
+
+Expected states:
+- Synced
+- Healthy
+
+---
+
+# ChaosForge GitOps Flow
+
+ChaosForge now follows a modern cloud-native deployment architecture:
+
+```text
+Code Push
+    ↓
+GitHub Actions CI
+    ↓
+Docker Image Push
+    ↓
+Helm values.yaml Update
+    ↓
+Git Repository Updated
+    ↓
+ArgoCD Detects Drift
+    ↓
+Kubernetes Automatically Reconciles
+```
+
+This architecture reflects production-grade GitOps deployment practices used in modern platform engineering environments.
