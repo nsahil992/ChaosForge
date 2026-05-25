@@ -1,0 +1,68 @@
+# DEPLOYMENT
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chaosforge-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: chaosforge
+
+  template:
+    metadata:
+      labels:
+        app: chaosforge
+    spec:
+      nodeSelector:
+        type: application
+
+      containers:
+        - name: chaosforge
+          image: nsahil992/chaosforge:1.0.0
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5050
+
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 5050
+            initialDelaySeconds: 10
+            periodSeconds: 5
+
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 5050
+            initialDelaySeconds: 5
+            periodSeconds: 3
+
+---
+
+# SERVICE
+apiVersion: v1
+kind: Service
+metadata:
+  name: chaosforge-service
+spec:
+  selector:
+    app: chaosforge
+
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5050
+  type: NodePort
+
+
