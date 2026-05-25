@@ -194,7 +194,8 @@ POST /memory-leak
 
 ```text
 chaosforge/
-│
+├── .github/workflows
+│       └── chaos_controller.py
 ├── app/
 │   ├── controllers/
 │   │   └── chaos_controller.py
@@ -213,7 +214,10 @@ chaosforge/
 │   │   └── memory_stress.py
 │   │   └── metrics.py
 │   └── app.py
-│
+├── Dockerfile
+├── docker-compose.yaml
+├── .dockerignore
+├── k8s/
 ├── requirements.txt
 ├── Makefile
 ├── .gitignore
@@ -493,6 +497,124 @@ docker compose up -d
 ```bash
 
 docker compose down
+
+```
+
+---
+
+# GitHub Actions CI Pipeline
+
+ChaosForge uses a self-hosted GitHub Actions runner.
+
+## CI Pipeline Features
+
+- Source checkout
+- Python validation
+- Docker image build
+- Docker image testing
+- DockerHub image push
+- Branch-based pipeline execution
+- Path-based workflow filtering
+
+## Pipeline Triggers
+
+```yaml
+
+push:
+  branches:
+    - master
+    - feature/**
+
+```
+
+---
+
+# Kubernetes Deployment
+
+ChaosForge is deployed on a multi-node Kubernetes cluster using Minikube.
+
+## Kubernetes Features
+
+- Multi-node cluster
+- Namespace isolation
+- Deployments
+- Services
+- Liveness probes
+- Readiness probes
+- Resource limits
+- Node labeling
+- Workload scheduling
+
+---
+
+# Kubernetes Architecture
+
+| Node | Purpose |
+|---|---|
+| Node 1 | Application workloads |
+| Node 2 | Platform & observability services |
+
+---
+
+# Start Kubernetes Cluster
+
+```bash
+
+minikube start \
+  --nodes 2 \
+  --cpus 2 \
+  --memory 2200 \
+  --driver=docker
+
+```
+
+---
+
+# Label Kubernetes Nodes
+
+## Application Node
+
+```bash
+
+kubectl label node minikube type=application
+
+```
+
+## Platform Services Node
+
+```bash
+
+kubectl label node minikube-m02 type=dependent-services
+
+```
+
+---
+
+# Deploy Kubernetes Resources
+
+```bash
+
+kubectl apply -f k8s/
+
+```
+
+---
+
+# Verify Deployment
+
+```bash
+
+kubectl get all -n chaosforge
+
+```
+
+---
+
+# Port Forward Service
+
+```bash
+
+kubectl port-forward svc/chaosforge-service 5050:80 -n chaosforge
 
 ```
 
