@@ -23,7 +23,6 @@ jobs:
 
     env:
       VERSION: ${{ secrets.SEMVER_VERSION }}
-      HOME: /Users/Sahil
 
     steps:
 
