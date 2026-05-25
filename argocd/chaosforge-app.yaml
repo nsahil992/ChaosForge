@@ -9,7 +9,7 @@ spec:
   source:
     repoURL: https://github.com/nsahil992/chaosforge.git
     targetRevision: master
-    path: Helm
+    path: helm
 
     helm:
       valueFiles:
