@@ -64,11 +64,10 @@ class ChaosService:
     def get_health_status():
 
         if ChaosState.error_mode:
-
             return {
-                "status": "DOWN",
+                "status": "DEGRADED",
                 "message": "Chaos mode active"
-            }, 503
+            }, 200
 
         return {
             "status": "UP",
