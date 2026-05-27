@@ -1,0 +1,13 @@
+grafana:
+  enabled: false
+
+promtail:
+  enabled: true
+
+loki:
+  enabled: true
+
+datasource:
+  enabled: true
+
+  isDefault: false
