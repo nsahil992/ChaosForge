@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: nsahil992/chaosforge
-  tag: "2.0.0"
+  tag: "2.1.0"
   pullPolicy: IfNotPresent
 
 service:
