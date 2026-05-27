@@ -1,7 +1,7 @@
 .PHONY: run install freeze
 
 APP_NAME = chaosforge
-VERSION ?= 2.0.0
+VERSION ?= 2.1.0
 
 DOCKER_USERNAME ?= nsahil992
 IMAGE = $(DOCKER_USERNAME)/$(APP_NAME):$(VERSION)
